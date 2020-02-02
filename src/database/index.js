@@ -25,8 +25,11 @@ class Database {
 
   mongo(){
     this.mongoConnection = mongoose.connect(
-      'mongo://192.168.99.101:27017/gobarber',
-      { useNewUrlParser: true, useFindAndModify: true });
+      'mongodb://192.168.99.101:27017/gobarber',
+      { useNewUrlParser: true, useFindAndModify: true, useUnifiedTopology: true
+      }).catch(err => {
+        console.log(err);
+      }).finally( console.log('Running MongoDB'));
   }
 };
 
