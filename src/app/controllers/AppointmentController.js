@@ -3,8 +3,38 @@ import { startOfHour, parseISO, isBefore } from 'date-fns';
 
 import Appointment from '../models/Appointment';
 import User from '../models/User';
+import File from '../models/File';
 
 class AppointmentController {
+
+  async index(req, res){
+    const appointments = await Appointment.findAll({
+      where: { user_id: req.userId, canceled_at: null},
+      order: ['date'],
+      attributes: ['id', 'date'],
+      include: [
+        {
+          model: User,
+          as: 'provider',
+          attributes: ['id', 'name'],
+          include: [
+            {
+              model: File,
+              as: 'avatar',
+              attributes: [ 'id','path','url']
+            }
+          ]
+        }
+      ]
+
+    }).catch(err => {
+      return res.status(400).json(err);
+
+    });
+
+    return res.status(200).json(appointments);
+
+  }
 
   async store(req, res) {
 
@@ -63,7 +93,7 @@ class AppointmentController {
       provider_id,
       date
     }).catch(err => {
-
+      console.log("error \n")
       return res.json(err);
     });
 
