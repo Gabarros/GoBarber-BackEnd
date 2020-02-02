@@ -1,6 +1,6 @@
 import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, format } from 'date-fns';
-import { pt } from 'date-fns/locale/pt-BR'
+import pt from 'date-fns/locale/pt'
 
 
 import Appointment from '../models/Appointment';
@@ -64,6 +64,10 @@ class AppointmentController {
     }).catch(err => {
       return res.json(err);
     });
+
+    if(req.userId === provider_id){
+      return res.status(400).json({ erro: 'Cant make appointments with yourself'})
+    }
 
     if (!checkIsProvider) {
       return res
